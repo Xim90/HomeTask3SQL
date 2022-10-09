@@ -4,6 +4,7 @@ import by.it_academy.constants.MenuMessage;
 import by.it_academy.exception.AppException;
 
 import java.sql.Connection;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MenuCommand {
@@ -24,7 +25,7 @@ public class MenuCommand {
         System.out.println(MenuMessage.USER_SUCCESSFULLY_REGISTERED);
     }
 
-    public static void createUserAccount(Connection connection, Scanner scanner) {
+    public static void createUserAccount(Connection connection, Scanner scanner) throws InputMismatchException {
         System.out.println(MenuMessage.ENTER_USER_ID);
         int userId = scanner.nextInt();
         System.out.println(MenuMessage.ENTER_CURRENCY);
@@ -37,21 +38,29 @@ public class MenuCommand {
         }
     }
 
-    public static void replenishAccount(Connection connection, Scanner scanner) {
+    public static void replenishAccount(Connection connection, Scanner scanner) throws InputMismatchException {
         System.out.println(MenuMessage.ENTER_ACCOUNT_ID);
         int accountId = scanner.nextInt();
         System.out.println(MenuMessage.ENTER_AMOUNT);
         int amount = scanner.nextInt();
-        QueryExecutor.replenishAccountSQL(connection, accountId, amount);
-        System.out.println(MenuMessage.ACCOUNT_SUCCESSFULLY_REPLENISHED);
+        try {
+            QueryExecutor.replenishAccountSQL(connection, accountId, amount);
+            System.out.println(MenuMessage.ACCOUNT_SUCCESSFULLY_REPLENISHED);
+        } catch (AppException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public static void withdrawFundsFromAccount(Connection connection, Scanner scanner) {
+    public static void withdrawFundsFromAccount(Connection connection, Scanner scanner) throws InputMismatchException{
         System.out.println(MenuMessage.ENTER_ACCOUNT_ID);
         int accountId = scanner.nextInt();
         System.out.println(MenuMessage.ENTER_AMOUNT);
         int amount = scanner.nextInt();
-        QueryExecutor.withdrawFundsFromAccountSQL(connection, accountId, amount);
-        System.out.println(MenuMessage.FUNDS_SUCCESSFULLY_WITHDRAWN_FROM_ACCOUNT);
+        try {
+            QueryExecutor.withdrawFundsFromAccountSQL(connection, accountId, amount);
+            System.out.println(MenuMessage.FUNDS_SUCCESSFULLY_WITHDRAWN_FROM_ACCOUNT);
+        } catch (AppException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

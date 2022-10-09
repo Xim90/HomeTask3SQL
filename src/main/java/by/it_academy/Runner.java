@@ -7,6 +7,7 @@ import by.it_academy.service.MenuCommand;
 import by.it_academy.util.DriverJDBCRegistrar;
 
 import java.sql.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Runner {
@@ -28,6 +29,8 @@ public class Runner {
                     }
                 }
                 while (!input.equals("5"));
+            } catch (InputMismatchException e) {
+                System.out.println(ErrorMessage.INCORRECT_INPUT);
             } catch (SQLException e) {
                 throw new AppException(ErrorMessage.CANNOT_CREATE_CONNECTION);
             }

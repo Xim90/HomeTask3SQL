@@ -56,7 +56,7 @@ public class QueryExecutor {
         return flag;
     }
 
-    public static void replenishAccountSQL(Connection connection, int accountId, int amount) {
+    public static void replenishAccountSQL(Connection connection, int accountId, int amount) throws AppException{
         if (amount > AccountInfo.AMOUNT_LIMIT) {
             throw new AppException(ErrorMessage.TRANSACTION_CANNOT_BE_MORE_THAN_LIMIT);
         }
@@ -70,7 +70,7 @@ public class QueryExecutor {
                 ErrorMessage.CANNOT_UPDATE_BALANCE);
     }
 
-    public static void withdrawFundsFromAccountSQL(Connection connection, int accountId, int amount) {
+    public static void withdrawFundsFromAccountSQL(Connection connection, int accountId, int amount) throws AppException {
         if (amount > AccountInfo.AMOUNT_LIMIT) {
             throw new AppException(ErrorMessage.TRANSACTION_CANNOT_BE_MORE_THAN_LIMIT);
         }
@@ -84,7 +84,7 @@ public class QueryExecutor {
                 ErrorMessage.CANNOT_UPDATE_BALANCE);
     }
 
-    private static int getAccountBalanceSQL(Connection connection, int accountId) {
+    private static int getAccountBalanceSQL(Connection connection, int accountId) throws AppException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(Query.GET_ACCOUNT_BALANCE)) {
             preparedStatement.setInt(1, accountId);
             preparedStatement.execute();
