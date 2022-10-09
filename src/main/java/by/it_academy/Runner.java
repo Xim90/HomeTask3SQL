@@ -1,4 +1,5 @@
 package by.it_academy;
+
 import by.it_academy.constants.*;
 import by.it_academy.constants.ErrorMessage;
 import by.it_academy.exception.AppException;
@@ -9,7 +10,6 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Runner {
-
     public static void main(String[] args) {
         if (DriverJDBCRegistrar.registerDriverJDBC()) {
             try (Connection connection = DriverManager.getConnection(Path.FULL_PATH_BANK_ACCOUNTS_BASE)) {
@@ -33,5 +33,4 @@ public class Runner {
             }
         }
     }
-
 }

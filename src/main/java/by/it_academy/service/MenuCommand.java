@@ -1,6 +1,7 @@
 package by.it_academy.service;
 
 import by.it_academy.constants.MenuMessage;
+import by.it_academy.exception.AppException;
 
 import java.sql.Connection;
 import java.util.Scanner;
@@ -28,8 +29,12 @@ public class MenuCommand {
         int userId = scanner.nextInt();
         System.out.println(MenuMessage.ENTER_CURRENCY);
         String currency = scanner.next();
-        QueryExecutor.createUserAccountSQL(connection, userId, currency);
-        System.out.println(MenuMessage.ACCOUNT_CREATED_SUCCESSFULLY);
+        try {
+            QueryExecutor.createUserAccountSQL(connection, userId, currency);
+            System.out.println(MenuMessage.ACCOUNT_CREATED_SUCCESSFULLY);
+        } catch (AppException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void replenishAccount(Connection connection, Scanner scanner) {

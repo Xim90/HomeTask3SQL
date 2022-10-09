@@ -23,33 +23,37 @@ public class QueryExecutor {
         }
     }
 
-    public static void createUserAccountSQL(Connection connection, int userId, String currency) {
-        checkUserAccountsSQL(connection, userId, currency);
-        try (PreparedStatement preparedStatement = connection.prepareStatement(Query.CREATE_NEW_ACCOUNT)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, 0);
-            preparedStatement.setString(3, currency);
-            preparedStatement.executeUpdate();
-        } catch (SQLException y) {
-            System.out.println(ErrorMessage.CANNOT_CREATE_AN_ACCOUNT);
+    public static void createUserAccountSQL(Connection connection, int userId, String currency) throws AppException {
+        if (!isUserAccountExist(connection, userId, currency)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(Query.CREATE_NEW_ACCOUNT)) {
+                preparedStatement.setInt(1, userId);
+                preparedStatement.setInt(2, 0);
+                preparedStatement.setString(3, currency);
+                preparedStatement.executeUpdate();
+            } catch (SQLException y) {
+                System.out.println(ErrorMessage.CANNOT_CREATE_AN_ACCOUNT);
+            }
+        } else {
+            throw new AppException(ErrorMessage.ACCOUNT_IN_THIS_CURRENCY_ALREADY_EXISTS);
         }
     }
 
-    private static void checkUserAccountsSQL(Connection connection, int userId, String currency) {
+    private static boolean isUserAccountExist(Connection connection, int userId, String currency) {
+        boolean flag = false;
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement(Query.SELECT_CURRENCY_FROM_ACCOUNTS_WHERE_USERID)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 if (resultSet.getString(ColumnLabelSQL.CURRENCY).equals(currency)) {
-                    resultSet.close();
-                    throw new AppException(ErrorMessage.ACCOUNT_IN_THIS_CURRENCY_ALREADY_EXISTS);
+                    flag = true;
                 }
             }
             resultSet.close();
         } catch (SQLException e) {
             System.out.println(ErrorMessage.CANNOT_CHECK_USER_ACCOUNTS);
         }
+        return flag;
     }
 
     public static void replenishAccountSQL(Connection connection, int accountId, int amount) {
